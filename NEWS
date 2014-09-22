@@ -3,6 +3,8 @@ libpipeline 1.3.1
 
 Fix test failures on Cygwin.
 
+Fix build on systems with neither setenv nor clearenv, e.g. Solaris 8.
+
 libpipeline 1.3.0 (26 March 2014)
 =================================
 

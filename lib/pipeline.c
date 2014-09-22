@@ -75,7 +75,7 @@
 #   endif
 #endif
 
-#ifndef HAVE_CLEARENV
+#if defined(HAVE_SETENV) && !defined(HAVE_CLEARENV)
 int clearenv (void)
 {
 	/* According to:
