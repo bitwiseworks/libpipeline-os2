@@ -14,5 +14,6 @@ set -e
 if type gnulib-tool >/dev/null 2>&1; then
 	gnulib-tool --update >/dev/null
 fi
-export LIBTOOLIZE_OPTIONS=--quiet
+LIBTOOLIZE_OPTIONS=--quiet
+export LIBTOOLIZE_OPTIONS
 autoreconf -fi "$@"
