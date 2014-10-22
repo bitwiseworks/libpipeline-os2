@@ -52,6 +52,7 @@ AC_DEFUN([gl_EARLY],
   # Code from module extensions:
   AC_REQUIRE([gl_USE_SYSTEM_EXTENSIONS])
   # Code from module extern-inline:
+  # Code from module fcntl-h:
   # Code from module float:
   # Code from module full-write:
   # Code from module gettext-h:
@@ -65,16 +66,20 @@ AC_DEFUN([gl_EARLY],
   AC_REQUIRE([AC_SYS_LARGEFILE])
   # Code from module lib-ignore:
   # Code from module lock:
+  # Code from module lstat:
   # Code from module malloc-posix:
   # Code from module malloca:
   # Code from module memchr:
+  # Code from module mkdtemp:
   # Code from module msvc-inval:
   # Code from module msvc-nothrow:
   # Code from module multiarch:
+  # Code from module pathmax:
   # Code from module raise:
   # Code from module read:
   # Code from module safe-read:
   # Code from module safe-write:
+  # Code from module secure_getenv:
   # Code from module setenv:
   # Code from module sigaction:
   # Code from module signal:
@@ -87,6 +92,7 @@ AC_DEFUN([gl_EARLY],
   # Code from module snippet/warn-on-use:
   # Code from module snprintf:
   # Code from module ssize_t:
+  # Code from module stat:
   # Code from module stdarg:
   dnl Some compilers (e.g., AIX 5.3 cc) need to be in c99 mode
   dnl for the builtin va_copy to work.  With Autoconf 2.60 or later,
@@ -109,6 +115,7 @@ AC_DEFUN([gl_EARLY],
   # Code from module sys_time:
   # Code from module sys_types:
   # Code from module sys_wait:
+  # Code from module tempname:
   # Code from module threadlib:
   gl_THREADLIB_EARLY
   # Code from module time:
@@ -161,6 +168,7 @@ AC_DEFUN([gl_INIT],
     [AM_][XGETTEXT_OPTION([--flag=error:3:c-format])
      AM_][XGETTEXT_OPTION([--flag=error_at_line:5:c-format])])
   AC_REQUIRE([gl_EXTERN_INLINE])
+  gl_FCNTL_H
   gl_FLOAT_H
   if test $REPLACE_FLOAT_LDBL = 1; then
     AC_LIBOBJ([float])
@@ -180,6 +188,12 @@ AC_DEFUN([gl_INIT],
   gl_IGNORE_UNUSED_LIBRARIES
   gl_LOCK
   gl_MODULE_INDICATOR([lock])
+  gl_FUNC_LSTAT
+  if test $REPLACE_LSTAT = 1; then
+    AC_LIBOBJ([lstat])
+    gl_PREREQ_LSTAT
+  fi
+  gl_SYS_STAT_MODULE_INDICATOR([lstat])
   gl_FUNC_MALLOC_POSIX
   if test $REPLACE_MALLOC = 1; then
     AC_LIBOBJ([malloc])
@@ -192,6 +206,12 @@ AC_DEFUN([gl_INIT],
     gl_PREREQ_MEMCHR
   fi
   gl_STRING_MODULE_INDICATOR([memchr])
+  gl_FUNC_MKDTEMP
+  if test $HAVE_MKDTEMP = 0; then
+    AC_LIBOBJ([mkdtemp])
+    gl_PREREQ_MKDTEMP
+  fi
+  gl_STDLIB_MODULE_INDICATOR([mkdtemp])
   gl_MSVC_INVAL
   if test $HAVE_MSVC_INVALID_PARAMETER_HANDLER = 1; then
     AC_LIBOBJ([msvc-inval])
@@ -201,6 +221,7 @@ AC_DEFUN([gl_INIT],
     AC_LIBOBJ([msvc-nothrow])
   fi
   gl_MULTIARCH
+  gl_PATHMAX
   gl_FUNC_RAISE
   if test $HAVE_RAISE = 0 || test $REPLACE_RAISE = 1; then
     AC_LIBOBJ([raise])
@@ -215,6 +236,12 @@ AC_DEFUN([gl_INIT],
   gl_UNISTD_MODULE_INDICATOR([read])
   gl_PREREQ_SAFE_READ
   gl_PREREQ_SAFE_WRITE
+  gl_FUNC_SECURE_GETENV
+  if test $HAVE_SECURE_GETENV = 0; then
+    AC_LIBOBJ([secure_getenv])
+    gl_PREREQ_SECURE_GETENV
+  fi
+  gl_STDLIB_MODULE_INDICATOR([secure_getenv])
   gl_FUNC_SETENV
   if test $HAVE_SETENV = 0 || test $REPLACE_SETENV = 1; then
     AC_LIBOBJ([setenv])
@@ -238,6 +265,12 @@ AC_DEFUN([gl_INIT],
   gl_STDIO_MODULE_INDICATOR([snprintf])
   gl_MODULE_INDICATOR([snprintf])
   gt_TYPE_SSIZE_T
+  gl_FUNC_STAT
+  if test $REPLACE_STAT = 1; then
+    AC_LIBOBJ([stat])
+    gl_PREREQ_STAT
+  fi
+  gl_SYS_STAT_MODULE_INDICATOR([stat])
   gl_STDARG_H
   AM_STDBOOL_H
   gl_STDDEF_H
@@ -284,6 +317,7 @@ AC_DEFUN([gl_INIT],
   AC_PROG_MKDIR_P
   gl_SYS_WAIT_H
   AC_PROG_MKDIR_P
+  gl_FUNC_GEN_TEMPNAME
   gl_THREADLIB
   gl_HEADER_TIME_H
   gl_TLS
@@ -475,6 +509,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/error.h
   lib/exitfail.c
   lib/exitfail.h
+  lib/fcntl.in.h
   lib/float+.h
   lib/float.c
   lib/float.in.h
@@ -489,16 +524,19 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/glthread/tls.h
   lib/intprops.h
   lib/itold.c
+  lib/lstat.c
   lib/malloc.c
   lib/malloca.c
   lib/malloca.h
   lib/malloca.valgrind
   lib/memchr.c
   lib/memchr.valgrind
+  lib/mkdtemp.c
   lib/msvc-inval.c
   lib/msvc-inval.h
   lib/msvc-nothrow.c
   lib/msvc-nothrow.h
+  lib/pathmax.h
   lib/printf-args.c
   lib/printf-args.h
   lib/printf-parse.c
@@ -509,6 +547,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/safe-read.h
   lib/safe-write.c
   lib/safe-write.h
+  lib/secure_getenv.c
   lib/setenv.c
   lib/sig-handler.c
   lib/sig-handler.h
@@ -518,6 +557,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/sigprocmask.c
   lib/size_max.h
   lib/snprintf.c
+  lib/stat.c
   lib/stdarg.in.h
   lib/stdbool.in.h
   lib/stddef.in.h
@@ -537,6 +577,8 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/sys_time.in.h
   lib/sys_types.in.h
   lib/sys_wait.in.h
+  lib/tempname.c
+  lib/tempname.h
   lib/time.in.h
   lib/unistd.c
   lib/unistd.in.h
@@ -571,6 +613,8 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/exponentd.m4
   m4/extensions.m4
   m4/extern-inline.m4
+  m4/fcntl-o.m4
+  m4/fcntl_h.m4
   m4/float_h.m4
   m4/gettimeofday.m4
   m4/gnulib-common.m4
@@ -584,21 +628,25 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/lib-prefix.m4
   m4/lock.m4
   m4/longlong.m4
+  m4/lstat.m4
   m4/malloc.m4
   m4/malloca.m4
   m4/math_h.m4
   m4/memchr.m4
+  m4/mkdtemp.m4
   m4/mmap-anon.m4
   m4/msvc-inval.m4
   m4/msvc-nothrow.m4
   m4/multiarch.m4
   m4/off_t.m4
   m4/onceonly.m4
+  m4/pathmax.m4
   m4/printf.m4
   m4/raise.m4
   m4/read.m4
   m4/safe-read.m4
   m4/safe-write.m4
+  m4/secure_getenv.m4
   m4/setenv.m4
   m4/sigaction.m4
   m4/signal_h.m4
@@ -606,6 +654,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/size_max.m4
   m4/snprintf.m4
   m4/ssize_t.m4
+  m4/stat.m4
   m4/stdarg.m4
   m4/stdbool.m4
   m4/stddef_h.m4
@@ -624,6 +673,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/sys_time_h.m4
   m4/sys_types_h.m4
   m4/sys_wait_h.m4
+  m4/tempname.m4
   m4/threadlib.m4
   m4/time_h.m4
   m4/tls.m4
