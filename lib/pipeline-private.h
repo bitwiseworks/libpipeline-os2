@@ -56,6 +56,7 @@ struct pipecmd {
 	char *name;
 	int nice;
 	int discard_err;	/* discard stderr? */
+	int cwd_fd;
 	char *cwd;
 	int nenv;
 	int env_max;		/* size of allocated array */

@@ -23,7 +23,11 @@
 #  include "config.h"
 #endif
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "dirname.h"
 #include "xalloc.h"
@@ -258,6 +262,40 @@ START_TEST (test_basic_chdir)
 }
 END_TEST
 
+START_TEST (test_basic_fchdir)
+{
+	pipeline *p;
+	int temp_dir_fd;
+	const char *raw_line;
+	char *line, *end;
+	char *child_base, *expected_base;
+
+	p = pipeline_new_command_args ("pwd", NULL);
+	temp_dir_fd = open (temp_dir, O_RDONLY | O_DIRECTORY);
+	fail_unless (temp_dir_fd >= 0);
+	pipecmd_fchdir (pipeline_get_command (p, 0), temp_dir_fd);
+	pipeline_want_out (p, -1);
+	pipeline_start (p);
+	raw_line = xstrdup (pipeline_readline (p));
+	fail_unless (raw_line != NULL);
+	line = xstrdup (raw_line);
+	end = line + strlen (line);
+	if (end > line && *(end - 1) == '\n')
+		*(end - 1) = '\0';
+	child_base = base_name (line);
+	expected_base = base_name (temp_dir);
+	fail_unless (!strcmp (child_base, expected_base),
+		     "child base name was '%s', expected '%s'",
+		     child_base, expected_base);
+	free (expected_base);
+	free (child_base);
+	free (line);
+	close (temp_dir_fd);
+	pipeline_wait (p);
+	pipeline_free (p);
+}
+END_TEST
+
 START_TEST (test_basic_sequence)
 {
 	pipeline *p;
@@ -293,6 +331,8 @@ Suite *basic_suite (void)
 	TEST_CASE (s, basic, unsetenv);
 	TEST_CASE (s, basic, clearenv);
 	TEST_CASE_WITH_FIXTURE (s, basic, chdir,
+				temp_dir_setup, temp_dir_teardown);
+	TEST_CASE_WITH_FIXTURE (s, basic, fchdir,
 				temp_dir_setup, temp_dir_teardown);
 	TEST_CASE (s, basic, sequence);
 

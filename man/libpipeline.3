@@ -210,6 +210,13 @@ Change the working directory to
 .Va directory
 while running this command.
 .Pp
+.It Ft void Fn pipecmd_fchdir "pipecmd *cmd" "int directory_fd"
+.Pp
+Change the working directory to the directory given by the open file
+descriptor
+.Va directory_fd
+while running this command.
+.Pp
 .It Xo Ft void
 .Fn pipecmd_setenv "pipecmd *cmd" "const char *name" "const char *value"
 .Xc

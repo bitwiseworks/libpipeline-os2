@@ -40,6 +40,7 @@ FUNCTIONS = \
 	pipecmd_nice \
 	pipecmd_discard_err \
 	pipecmd_chdir \
+	pipecmd_fchdir \
 	pipecmd_setenv \
 	pipecmd_unsetenv \
 	pipecmd_clearenv \

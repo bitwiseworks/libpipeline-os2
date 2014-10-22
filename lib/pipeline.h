@@ -177,6 +177,10 @@ void pipecmd_discard_err (pipecmd *cmd, int discard_err);
 /* Change to this directory while running this command. */
 void pipecmd_chdir (pipecmd *cmd, const char *directory);
 
+/* Change to the directory given by this open file descriptor while running
+ * this command. */
+void pipecmd_fchdir (pipecmd *cmd, int directory_fd);
+
 /* Set an environment variable while running this command. */
 void pipecmd_setenv (pipecmd *cmd, const char *name, const char *value);
 

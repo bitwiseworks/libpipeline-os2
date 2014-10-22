@@ -1,9 +1,12 @@
-libpipeline 1.3.2
+libpipeline 1.4.0
 =================
 
 Various portability fixes for Solaris, mostly suggested by Peter Bray.  This
 includes a PIPELINE_QUIET environment variable which suppresses the error
 message normally emitted when a subprocess is terminated by a signal.
+
+Add `pipecmd_fchdir', which is analogous to `pipecmd_chdir' but takes an
+open file descriptor rather than a path.
 
 libpipeline 1.3.1 (22 September 2014)
 =====================================
