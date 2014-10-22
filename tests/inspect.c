@@ -99,18 +99,12 @@ START_TEST (test_inspect_pid)
 	 * that's sufficiently portable.
 	 */
 	if (pid == pipeline_get_pid (p, 0)) {
-		FILE *saved_stderr;
 		int status;
 
-		/* Suppress "Terminated" errors.  We should probably have a
-		 * cleaner way to do this.
-		 */
-		saved_stderr = stderr;
-		stderr = fopen ("/dev/null", "w");
+		/* Suppress "Terminated" errors. */
+		setenv ("PIPELINE_QUIET", "1", 1);
 		kill (pid, SIGTERM);
 		status = pipeline_wait (p);
-		fclose (stderr);
-		stderr = saved_stderr;
 
 		fail_unless (status == 128 + SIGTERM,
 			     "pid_helper did not indicate SIGTERM");

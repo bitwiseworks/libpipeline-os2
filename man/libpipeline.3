@@ -681,6 +681,13 @@ environment variable is set to
 then
 .Nm
 will emit debugging messages on standard error.
+.Pp
+If the
+.Ev PIPELINE_QUIET
+environment variable is set to any value, then
+.Nm
+will refrain from printing an error message when a subprocess is terminated
+by a signal.
 .Sh EXAMPLES
 In the following examples, function names starting with
 .Li pipecmd_

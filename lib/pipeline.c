@@ -819,7 +819,9 @@ void pipecmd_exec (pipecmd *cmd)
 						status = 0;
 					else
 #endif /* SIGPIPE */
-					if (WCOREDUMP (status))
+					if (getenv ("PIPELINE_QUIET"))
+						;
+					else if (WCOREDUMP (status))
 						error (0, 0,
 						       "%s: %s (core dumped)",
 						       child->name,
@@ -1651,6 +1653,8 @@ int pipeline_wait_all (pipeline *p, int **statuses, int *n_statuses)
 					 */
 					if (sig == SIGINT || sig == SIGQUIT)
 						raise_signal = sig;
+					else if (getenv ("PIPELINE_QUIET"))
+						;
 					else if (WCOREDUMP (status))
 						error (0, 0,
 						       "%s: %s (core dumped)",
