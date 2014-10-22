@@ -1,3 +1,10 @@
+libpipeline 1.3.2
+=================
+
+Various portability fixes for Solaris, mostly suggested by Peter Bray.  This
+includes a PIPELINE_QUIET environment variable which suppresses the error
+message normally emitted when a subprocess is terminated by a signal.
+
 libpipeline 1.3.1 (22 September 2014)
 =====================================
 
