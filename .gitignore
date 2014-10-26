@@ -17,6 +17,7 @@
 gnulib/lib/alloca.h
 gnulib/lib/arg-nonnull.h
 gnulib/lib/c++defs.h
+gnulib/lib/fcntl.h
 gnulib/lib/glthread/.dirstamp
 gnulib/lib/signal.h
 gnulib/lib/stdio.h
