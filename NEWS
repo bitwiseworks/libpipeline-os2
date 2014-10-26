@@ -1,5 +1,5 @@
-libpipeline 1.4.0
-=================
+libpipeline 1.4.0 (25 October 2014)
+===================================
 
 Various portability fixes for Solaris, mostly suggested by Peter Bray.  This
 includes a PIPELINE_QUIET environment variable which suppresses the error
