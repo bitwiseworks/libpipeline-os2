@@ -235,7 +235,7 @@ AS_VAR_COPY([$1], [pkg_cv_][$1])
 AS_VAR_IF([$1], [""], [$5], [$4])dnl
 ])# PKG_CHECK_VAR
 
-# po.m4 serial 22 (gettext-0.19)
+# po.m4 serial 24 (gettext-0.19)
 dnl Copyright (C) 1995-2014 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
@@ -832,10 +832,9 @@ AC_SUBST([AR])dnl
 # configured tree to be moved without reconfiguration.
 
 AC_DEFUN([AM_AUX_DIR_EXPAND],
-[dnl Rely on autoconf to set up CDPATH properly.
-AC_PREREQ([2.50])dnl
-# expand $ac_aux_dir to an absolute path
-am_aux_dir=`cd $ac_aux_dir && pwd`
+[AC_REQUIRE([AC_CONFIG_AUX_DIR_DEFAULT])dnl
+# Expand $ac_aux_dir to an absolute path.
+am_aux_dir=`cd "$ac_aux_dir" && pwd`
 ])
 
 # AM_CONDITIONAL                                            -*- Autoconf -*-
