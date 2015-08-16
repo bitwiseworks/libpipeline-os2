@@ -28,6 +28,9 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <errno.h>
+
+#include "error.h"
 
 #include "common.h"
 
@@ -72,6 +75,16 @@ END_TEST
 
 static void pid_helper (void *data PIPELINE_ATTR_UNUSED)
 {
+	struct sigaction sa;
+
+	/* Get rid of check's SIGTERM handler. */
+	memset (&sa, 0, sizeof sa);
+	sa.sa_handler = SIG_DFL;
+	sigemptyset (&sa.sa_mask);
+	sa.sa_flags = 0;
+	if (sigaction (SIGTERM, &sa, NULL) == -1)
+		error (1, errno, "can't install SIGTERM handler");
+
 	printf ("%ld\n", (long) getpid ());
 	fflush (stdout);
 	pause ();

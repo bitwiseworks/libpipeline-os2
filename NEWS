@@ -1,3 +1,8 @@
+libpipeline 1.4.1
+=================
+
+Fix test failure with Check 0.10.0.
+
 libpipeline 1.4.0 (25 October 2014)
 ===================================
 
