@@ -18,6 +18,9 @@
 ## along with libpipeline; if not, write to the Free Software
 ## Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301
 ## USA
+VENDOR ?=community
+BUILD_INFO=\#\#1\#\# $(shell date +'%d %b %Y %H:%M:%S')     $(shell uname -n)
+BUILDLEVEL_INFO=@\#$(VENDOR):$(VERSION)\#@$(BUILD_INFO)::::0::
 
 lib_LTLIBRARIES = libpipeline.la
 
@@ -40,7 +43,8 @@ libpipeline_la_LIBADD = ../gnulib/lib/libgnu.la $(LTLIBOBJS)
 libpipeline_la_LDFLAGS = \
 	-export-symbols-regex '^(pipecmd|pipeline)_' \
 	-no-undefined \
-	-version-info 5:1:4
+	-version-info 5:1:4 \
+	-buildlevel '$(BUILDLEVEL_INFO)'
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libpipeline.pc
