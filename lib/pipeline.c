@@ -52,6 +52,11 @@
 #include "error.h"
 #include "pipeline.h"
 
+#ifdef __OS2__
+#  include <sys/socket.h>
+#  define pipe(p) socketpair(AF_UNIX, SOCK_STREAM,0, p)
+#else
+
 #ifdef USE_SOCKETPAIR_PIPE
 #   include <netdb.h>
 #   include <netinet/in.h>
@@ -75,6 +80,8 @@
 #   endif
 #endif
 
+#endif
+
 #if defined(HAVE_SETENV) && !defined(HAVE_CLEARENV)
 int clearenv (void)
 {
@@ -84,7 +91,9 @@ int clearenv (void)
 	 * new environment consisting of just a terminator is indeed
 	 * probably the best we can do.
 	 */
+#ifndef __OS2__ //we can't just clear the whole env, as this destroys to much
 	environ = XCALLOC (1, char *);
+#endif
 	return 0;
 }
 #endif
@@ -361,6 +370,10 @@ pipecmd *pipecmd_new_sequence (const char *name, ...)
 
 static void passthrough (void *data PIPELINE_ATTR_UNUSED)
 {
+#ifdef __OS2__ // setting to binary here is needed, as else crlf might be added
+	setmode(STDIN_FILENO, O_BINARY);
+	setmode(STDOUT_FILENO, O_BINARY);
+#endif
 	for (;;) {
 		char buffer[4096];
 		int r = safe_read (STDIN_FILENO, buffer, 4096);
