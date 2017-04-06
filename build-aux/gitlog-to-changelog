@@ -406,8 +406,10 @@ sub git_dir_option($)
         and die "$ME:$.: unexpected line:\n$in";
     }
 
-  close PIPE
-    or die "$ME: error closing pipe from " . quoted_cmd (@cmd) . "\n";
+# due to some reasons closing the pipe does not work on os/2
+  close PIPE;
+#  close PIPE
+#    or die "$ME: error closing pipe from " . quoted_cmd (@cmd) . "\n";
   # FIXME-someday: include $PROCESS_STATUS in the diagnostic
 
   # Complain about any unused entry in the --amend=F specified file.
