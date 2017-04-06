@@ -184,6 +184,9 @@ START_TEST (test_basic_clearenv)
 		     line2);
 	pipeline_wait (p);
 
+#ifdef __OS2__ // as clearenv is a non function we have to reset it manual
+	unsetenv ("TEST3");
+#endif
 	pipecmd_clearenv (pipeline_get_command (p, 0));
 	pipeline_start (p);
 	line1 = pipeline_readline (p);
