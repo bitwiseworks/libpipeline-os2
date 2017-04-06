@@ -53,6 +53,7 @@
 #include "pipeline.h"
 
 #ifdef __OS2__
+#  include <io.h>
 #  include <sys/socket.h>
 #  define pipe(p) socketpair(AF_UNIX, SOCK_STREAM,0, p)
 #else
