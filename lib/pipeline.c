@@ -1390,6 +1390,12 @@ static struct sigaction osa_sigint, osa_sigquit;
 void pipeline_start (pipeline *p)
 {
 	int i, j;
+#ifdef __OS2__
+	/* File redirections must preserve bytes, just like socket pairs. */
+	int file_mode = O_BINARY;
+#else
+	int file_mode = 0;
+#endif
 	int last_input = -1;
 	int infd[2];
 	sigset_t set, oset;
@@ -1475,7 +1481,7 @@ void pipeline_start (pipeline *p)
 		last_input = p->want_in;
 	else if (p->redirect_in == REDIRECT_FILE_NAME) {
 		assert (p->want_infile);
-		last_input = open (p->want_infile, O_RDONLY);
+		last_input = open (p->want_infile, O_RDONLY | file_mode);
 		if (last_input < 0)
 			error (FATAL, errno, "can't open %s", p->want_infile);
 	}
@@ -1500,7 +1506,7 @@ void pipeline_start (pipeline *p)
 				assert (p->want_outfile);
 				output_write = open (p->want_outfile,
 						     O_WRONLY | O_CREAT |
-						     O_TRUNC, 0666);
+						     O_TRUNC | file_mode, 0666);
 				if (output_write < 0)
 					error (FATAL, errno, "can't open %s",
 					       p->want_outfile);
