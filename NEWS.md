@@ -1,3 +1,11 @@
+libpipeline 1.5.7 (13 November 2022)
+====================================
+
+ * Add notes to libpipeline(3) of when functions were added.
+ * Transferred Git repository to https://gitlab.com/libpipeline/libpipeline.
+ * Make `socketpair` tests used by `./configure --enable-socketpair-pipe`
+   compatible with C23.
+
 libpipeline 1.5.6 (24 April 2022)
 =================================
 
