@@ -1,15 +1,34 @@
 default:
-  image: gcc
+  image: debian:unstable
+
+variables:
+  GIT_DEPTH: 0
 
 stages:
+  - bootstrap
   - build
-  - test
+  - upload
+  - release
 
-bootstrap:
+pre-commit:
   stage: .pre
+  variables:
+    XDG_CACHE_HOME: "$CI_PROJECT_DIR/.cache"
   before_script:
     - apt -qq update
-    - apt -y -qq install autoconf automake autopoint libtool
+    - apt -y -qq install git pre-commit
+  script:
+    - pre-commit run -a
+  cache:
+    key: $CI_JOB_NAME
+    paths:
+      - .cache/pre-commit
+
+bootstrap:
+  stage: bootstrap
+  before_script:
+    - apt -qq update
+    - apt -y -qq install autoconf automake autopoint git libtool pkg-config
   script:
     - if test -d gnulib-src; then git -C gnulib-src pull; else git clone git://git.sv.gnu.org/gnulib gnulib-src; fi
     - rm -rf bootstrapped
@@ -27,10 +46,13 @@ build-distcheck:
   stage: build
   before_script:
     - apt -qq update
-    - apt -y -qq install build-essential pkg-config check
+    - apt -y -qq install build-essential check git pkg-config
   script:
     - (cd bootstrapped && ./configure)
     - make -C bootstrapped distcheck V=1
+  artifacts:
+    paths:
+      - "bootstrapped/*.tar.gz"
 
 build-out-of-tree:
   stage: build
@@ -41,3 +63,37 @@ build-out-of-tree:
     - mkdir -p bootstrapped/obj
     - (cd bootstrapped/obj && ../configure)
     - make -C bootstrapped/obj check V=1
+
+upload:
+  stage: upload
+  image: curlimages/curl:latest
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - |
+      curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "bootstrapped/${CI_PROJECT_NAME}-${CI_COMMIT_TAG}.tar.gz" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${CI_PROJECT_NAME}/${CI_COMMIT_TAG}/${CI_PROJECT_NAME}-${CI_COMMIT_TAG}.tar.gz"
+
+release:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  rules:
+    - if: $CI_COMMIT_TAG
+  # Prepare description.  The maintainer will need to download the tarball,
+  # sign it, and reupload the tarball and its signature to Savannah.
+  script:
+    - |
+      echo "Releasing ${CI_PROJECT_NAME} ${CI_COMMIT_TAG}."
+      (echo "Changes"
+       echo "-------"
+       echo
+       echo "$(tail -n+4 bootstrapped/NEWS.md | sed "/^${CI_PROJECT_NAME} /,\$d")"
+       echo
+       echo "Download (GPG key 0x393587D97D86500B)"
+       echo "-------------------------------------"
+       echo
+       echo " * https://download.savannah.nongnu.org/releases/${CI_PROJECT_NAME}/${CI_PROJECT_NAME}-${CI_COMMIT_TAG}.tar.gz"
+       printf %s " * https://download.savannah.nongnu.org/releases/${CI_PROJECT_NAME}/${CI_PROJECT_NAME}-${CI_COMMIT_TAG}.tar.gz.asc"
+       ) >description.md
+  release:
+    tag_name: $CI_COMMIT_TAG
+    description: './description.md'

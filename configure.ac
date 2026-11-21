@@ -22,7 +22,7 @@ dnl Process this file with autoconf to produce a configure script.
 m4_pattern_forbid([^PIPELINE_])
 
 # Initialise and check we're in the correct directory.
-AC_INIT([libpipeline], [1.5.4], [cjwatson@debian.org])
+AC_INIT([libpipeline], [1.5.5], [cjwatson@debian.org])
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([1.11 -Wall -Werror foreign])
 AM_MAINTAINER_MODE
@@ -40,17 +40,37 @@ AC_PROG_CC
 gl_EARLY
 AC_PROG_CPP
 CFLAGS="$CFLAGS -Wall"
-# Enable all reasonable GCC warnings.
-gl_MANYWARN_ALL_GCC([warnings])
-nw=
-nw="$nw -Wsystem-headers"
-nw="$nw -Wmissing-field-initializers"
-nw="$nw -Winline"
-gl_MANYWARN_COMPLEMENT([warnings], [$warnings], [$nw])
-for w in $warnings; do
-	gl_WARN_ADD([$w])
-done
-gl_WARN_ADD([-Wno-missing-field-initializers])
+
+AC_ARG_ENABLE([gcc-warnings],
+  [AS_HELP_STRING([--enable-gcc-warnings=TYPE],
+    [control generation of GCC warnings.  The TYPE 'no' disables
+     warnings; 'yes' generates cheap warnings if available (default);
+     'expensive' in addition generates expensive-to-compute warnings
+     if available])],
+  [case $enableval in
+     no|yes|expensive) ;;
+     *) AC_MSG_ERROR([bad value $enableval for gcc-warnings option]) ;;
+   esac
+   pipeline_gcc_warnings=$enableval],
+  [pipeline_gcc_warnings=yes]
+)
+if test "$pipeline_gcc_warnings" != no; then
+	# Enable all reasonable GCC warnings.
+	gl_MANYWARN_ALL_GCC([warnings])
+	nw=
+	nw="$nw -Wsystem-headers"
+	nw="$nw -Wmissing-field-initializers"
+	nw="$nw -Winline"
+	if test "$pipeline_gcc_warnings" != expensive; then
+		nw="$nw -fanalyzer"
+	fi
+	gl_MANYWARN_COMPLEMENT([warnings], [$warnings], [$nw])
+	for w in $warnings; do
+		gl_WARN_ADD([$w])
+	done
+	gl_WARN_ADD([-Wno-missing-field-initializers])
+fi
+
 AC_PROG_LN_S
 AM_PROG_AR
 LT_INIT([disable-static])
