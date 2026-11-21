@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-# Copyright (C) 2010-2017 Colin Watson.
+# Copyright (C) 2010-2019 Colin Watson.
 #
 # This file is part of libpipeline.
 #
@@ -22,16 +22,15 @@ dnl Process this file with autoconf to produce a configure script.
 m4_pattern_forbid([^PIPELINE_])
 
 # Initialise and check we're in the correct directory.
-AC_INIT([libpipeline], [1.5.0], [cjwatson@debian.org])
+AC_INIT([libpipeline], [1.5.1], [cjwatson@debian.org])
 AC_CONFIG_AUX_DIR([build-aux])
-AM_INIT_AUTOMAKE([1.10 -Wall -Werror foreign])
+AM_INIT_AUTOMAKE([1.11 -Wall -Werror foreign])
 AM_MAINTAINER_MODE
-m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
-AC_PREREQ([2.59])
+AM_SILENT_RULES([yes])
+AC_PREREQ([2.63])
 AC_CONFIG_SRCDIR([lib/pipeline.c])
 AC_GNU_SOURCE
-m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
-LT_INIT([disable-static])
+PIPELINE_TAR_SORT_NAME
 
 AC_CONFIG_HEADER([config.h])
 AC_CANONICAL_HOST
@@ -53,6 +52,8 @@ then
 	gl_WARN_ADD([-Wno-missing-field-initializers])
 fi
 AC_PROG_LN_S
+AM_PROG_AR
+LT_INIT([disable-static])
 AC_DEFINE_UNQUOTED([SHELL], ["$SHELL"], [A POSIX shell interpreter.])
 PKG_CHECK_MODULES([CHECK], [check >= 0.9.4], [run_tests=yes], [run_tests=no])
 AM_CONDITIONAL([RUN_TESTS], [test "x$run_tests" = xyes])
@@ -97,7 +98,7 @@ PIPELINE_ECHO_VAR(LDFLAGS)
 PIPELINE_ECHO_VAR(LIBS)
 
 AC_CONFIG_FILES([Makefile
-	gnulib/lib/Makefile
+	gl/lib/Makefile
 	lib/Makefile
 	lib/libpipeline.pc
 	man/Makefile
