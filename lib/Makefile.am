@@ -30,6 +30,8 @@ libpipeline_la_CPPFLAGS = \
 libpipeline_la_SOURCES = \
 	appendstr.c \
 	debug.c \
+	fatal.c \
+	fatal.h \
 	pipeline.c \
 	pipeline-private.h
 
@@ -40,7 +42,7 @@ libpipeline_la_LIBADD = ../gl/lib/libgnu.la $(LTLIBOBJS)
 libpipeline_la_LDFLAGS = \
 	-export-symbols-regex '^(pipecmd|pipeline)_' \
 	-no-undefined \
-	-version-info 6:5:5
+	-version-info 6:6:5
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libpipeline.pc
