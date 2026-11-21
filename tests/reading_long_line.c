@@ -53,7 +53,7 @@ START_TEST (test_reading_longline)
 
 	/* Write the random string to file */
 	char *testfile = xasprintf ("%s/test", temp_dir);
-	FILE *tfd = fopen (testfile, "w");
+	FILE *tfd = fopen (testfile, "wb");
 	if (!tfd) {
 		fail ("fopen failed: %s", strerror (errno));
 		return;

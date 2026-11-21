@@ -49,7 +49,7 @@ START_TEST (test_redirect_files)
 		fail ("mkstemp failed: %s", strerror (errno));
 		return;
 	}
-	fh = fdopen (fd, "w");
+	fh = fdopen (fd, "wb");
 	fprintf (fh, "test data\n");
 	fflush (fh);
 
