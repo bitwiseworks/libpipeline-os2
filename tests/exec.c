@@ -23,12 +23,12 @@
 #  include "config.h"
 #endif
 
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
 #include <errno.h>
+#include <stdlib.h>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <unistd.h>
 
 #include "xvasprintf.h"
 
@@ -59,7 +59,7 @@ START_TEST (test_exec_process)
 
 		pid = fork ();
 		if (pid < 0) {
-			fail ("fork failed: %s", strerror (errno));
+			ck_abort_msg ("fork failed: %s", strerror (errno));
 			return;
 		}
 		if (pid == 0)
@@ -68,7 +68,7 @@ START_TEST (test_exec_process)
 		while (waitpid (pid, &status, 0) < 0) {
 			if (errno == EINTR)
 				continue;
-			fail ("waitpid failed: %s", strerror (errno));
+			ck_abort_msg ("waitpid failed: %s", strerror (errno));
 			return;
 		}
 
@@ -98,11 +98,11 @@ START_TEST (test_exec_function)
 		int status;
 
 		cmd = pipecmd_new_function ("exit_helper", exit_helper, NULL,
-					    &i);
+		                            &i);
 
 		pid = fork ();
 		if (pid < 0) {
-			fail ("fork failed: %s", strerror (errno));
+			ck_abort_msg ("fork failed: %s", strerror (errno));
 			return;
 		}
 		if (pid == 0)
@@ -111,7 +111,7 @@ START_TEST (test_exec_function)
 		while (waitpid (pid, &status, 0) < 0) {
 			if (errno == EINTR)
 				continue;
-			fail ("waitpid failed: %s", strerror (errno));
+			ck_abort_msg ("waitpid failed: %s", strerror (errno));
 			return;
 		}
 

@@ -23,11 +23,11 @@
 #  include "config.h"
 #endif
 
-#include <stdlib.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <string.h>
 #include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 #include "xalloc.h"
 #include "xvasprintf.h"
@@ -45,7 +45,7 @@ START_TEST (test_redirect_files)
 
 	fd = mkstemp (template);
 	if (fd < 0) {
-		fail ("mkstemp failed: %s", strerror (errno));
+		ck_abort_msg ("mkstemp failed: %s", strerror (errno));
 		return;
 	}
 	fh = fdopen (fd, "w");
@@ -92,8 +92,8 @@ static Suite *redirect_suite (void)
 	Suite *s = suite_create ("Redirect");
 
 	TEST_CASE (s, redirect, files);
-	TEST_CASE_WITH_FIXTURE (s, redirect, outfile,
-				temp_dir_setup, temp_dir_teardown);
+	TEST_CASE_WITH_FIXTURE (s, redirect, outfile, temp_dir_setup,
+	                        temp_dir_teardown);
 
 	return s;
 }

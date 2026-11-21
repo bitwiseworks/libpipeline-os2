@@ -22,17 +22,17 @@ dnl Process this file with autoconf to produce a configure script.
 m4_pattern_forbid([^PIPELINE_])
 
 # Initialise and check we're in the correct directory.
-AC_INIT([libpipeline], [1.5.3], [cjwatson@debian.org])
+AC_INIT([libpipeline], [1.5.4], [cjwatson@debian.org])
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([1.11 -Wall -Werror foreign])
 AM_MAINTAINER_MODE
 AM_SILENT_RULES([yes])
-AC_PREREQ([2.63])
+AC_PREREQ([2.64])
 AC_CONFIG_SRCDIR([lib/pipeline.c])
-AC_GNU_SOURCE
+AC_USE_SYSTEM_EXTENSIONS
 PIPELINE_TAR_SORT_NAME
 
-AC_CONFIG_HEADER([config.h])
+AC_CONFIG_HEADERS([config.h])
 AC_CANONICAL_HOST
 
 # Check $PATH for the following programs and append suitable options.
@@ -59,7 +59,6 @@ PKG_CHECK_MODULES([CHECK], [check >= 0.9.10], [run_tests=yes], [run_tests=no])
 AM_CONDITIONAL([RUN_TESTS], [test "x$run_tests" = xyes])
 
 # Check for various header files and associated libraries.
-AC_ISC_POSIX
 gl_INIT
 AC_CHECK_HEADERS([fcntl.h])
 AC_CHECK_FUNCS([clearenv])
