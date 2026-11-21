@@ -22,7 +22,7 @@ dnl Process this file with autoconf to produce a configure script.
 m4_pattern_forbid([^PIPELINE_])
 
 # Initialise and check we're in the correct directory.
-AC_INIT([libpipeline], [1.5.2], [cjwatson@debian.org])
+AC_INIT([libpipeline], [1.5.3], [cjwatson@debian.org])
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([1.11 -Wall -Werror foreign])
 AM_MAINTAINER_MODE
@@ -55,7 +55,7 @@ AC_PROG_LN_S
 AM_PROG_AR
 LT_INIT([disable-static])
 AC_DEFINE_UNQUOTED([SHELL], ["$SHELL"], [A POSIX shell interpreter.])
-PKG_CHECK_MODULES([CHECK], [check >= 0.9.4], [run_tests=yes], [run_tests=no])
+PKG_CHECK_MODULES([CHECK], [check >= 0.9.10], [run_tests=yes], [run_tests=no])
 AM_CONDITIONAL([RUN_TESTS], [test "x$run_tests" = xyes])
 
 # Check for various header files and associated libraries.
