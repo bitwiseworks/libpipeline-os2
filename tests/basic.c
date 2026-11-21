@@ -300,7 +300,7 @@ END_TEST
 /* This is of course better done using pipecmd_setenv, but setting an
  * environment variable makes for an easy test.
  */
-static void pre_exec (void *data PIPELINE_ATTR_UNUSED)
+static void pre_exec (void *data _GL_UNUSED)
 {
 	setenv ("TEST1", "10", 1);
 }
@@ -338,7 +338,7 @@ START_TEST (test_basic_sequence)
 }
 END_TEST
 
-Suite *basic_suite (void)
+static Suite *basic_suite (void)
 {
 	Suite *s = suite_create ("Basic");
 

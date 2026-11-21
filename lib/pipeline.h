@@ -50,6 +50,10 @@ extern "C" {
 #endif
 
 /* Does this compiler support marking variables as unused? */
+/* This is no longer used internally and isn't documented as part of
+ * libpipeline's public API, but is preserved just in case somebody used it
+ * anyway.
+ */
 #if PIPELINE_GNUC_PREREQ(2,4)
 #  define PIPELINE_ATTR_UNUSED __attribute__ ((__unused__))
 #else
@@ -380,8 +384,12 @@ typedef void pipeline_post_fork_fn (void);
  */
 void pipeline_install_post_fork (pipeline_post_fork_fn *fn);
 
-/* Start the processes in a pipeline. Installs this library's SIGCHLD
- * handler if not already installed. Calls error(FATAL) on error. */
+/* Start the processes in a pipeline.  Installs this library's SIGCHLD
+ * handler if not already installed.  Calls error(FATAL) on error.
+ *
+ * The standard file descriptors (0, 1, and 2) must be open before calling
+ * this function.
+ */
 void pipeline_start (pipeline *p);
 
 /* Wait for a pipeline to complete.  Set *statuses to a newly-allocated

@@ -371,7 +371,7 @@ pipecmd *pipecmd_new_sequence (const char *name, ...)
 	return cmd;
 }
 
-static void passthrough (void *data PIPELINE_ATTR_UNUSED)
+static void passthrough (void *data _GL_UNUSED)
 {
 	for (;;) {
 		char buffer[4096];
@@ -535,7 +535,7 @@ void pipecmd_argstr (pipecmd *cmd, const char *argstr)
 	}
 }
 
-int pipecmd_get_nargs (pipecmd *cmd)
+int _GL_ATTRIBUTE_PURE pipecmd_get_nargs (pipecmd *cmd)
 {
 	struct pipecmd_process *cmdp;
 
@@ -820,7 +820,8 @@ void pipecmd_exec (pipecmd *cmd)
 				cmdf->free_func (cmdf->data);
 			if (cmd->pre_exec_free_func)
 				cmd->pre_exec_free_func (cmd->pre_exec_data);
-			exit (0);
+			fflush (NULL);
+			_exit (0);
 		}
 
 		case PIPECMD_SEQUENCE: {
@@ -897,12 +898,12 @@ void pipecmd_exec (pipecmd *cmd)
 
 				if (WIFSIGNALED (status)) {
 					raise (WTERMSIG (status));
-					exit (1); /* just to make sure */
+					_exit (1); /* just to make sure */
 				} else if (status && WIFEXITED (status))
-					exit (WEXITSTATUS (status));
+					_exit (WEXITSTATUS (status));
 			}
 
-			exit (0);
+			_exit (0);
 		}
 	}
 
@@ -910,7 +911,7 @@ void pipecmd_exec (pipecmd *cmd)
 	/* Never called, but gcc doesn't realise that error with non-zero
 	 * status always exits.
 	 */
-	exit (EXEC_FAILED_EXIT_STATUS);
+	_exit (EXEC_FAILED_EXIT_STATUS);
 }
 
 void pipecmd_free (pipecmd *cmd)
@@ -1153,12 +1154,12 @@ void pipeline_commands (pipeline *p, ...)
 	va_end (cmdv);
 }
 
-int pipeline_get_ncommands (pipeline *p)
+int _GL_ATTRIBUTE_PURE pipeline_get_ncommands (pipeline *p)
 {
 	return p->ncommands;
 }
 
-pipecmd *pipeline_get_command (pipeline *p, int n)
+pipecmd * _GL_ATTRIBUTE_PURE pipeline_get_command (pipeline *p, int n)
 {
 	if (n < 0 || n >= p->ncommands)
 		return NULL;
@@ -1175,7 +1176,7 @@ pipecmd *pipeline_set_command (pipeline *p, int n, pipecmd *cmd)
 	return prev;
 }
 
-pid_t pipeline_get_pid (pipeline *p, int n)
+pid_t _GL_ATTRIBUTE_PURE pipeline_get_pid (pipeline *p, int n)
 {
 	assert (p->pids);	/* pipeline started */
 	if (n < 0 || n >= p->ncommands)
@@ -2223,7 +2224,7 @@ const char *pipeline_peek (pipeline *p, size_t *len)
 	return get_block (p, len, 1);
 }
 
-size_t pipeline_peek_size (pipeline *p)
+size_t _GL_ATTRIBUTE_PURE pipeline_peek_size (pipeline *p)
 {
 	if (!p->buffer)
 		return 0;

@@ -73,7 +73,7 @@ START_TEST (test_inspect_pipeline)
 }
 END_TEST
 
-static void pid_helper (void *data PIPELINE_ATTR_UNUSED)
+static void pid_helper (void *data _GL_UNUSED)
 {
 	struct sigaction sa;
 
@@ -126,7 +126,7 @@ START_TEST (test_inspect_pid)
 }
 END_TEST
 
-Suite *inspect_suite (void)
+static Suite *inspect_suite (void)
 {
 	Suite *s = suite_create ("Inspect");
 
