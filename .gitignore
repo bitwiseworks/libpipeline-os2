@@ -31,6 +31,8 @@ gnulib/lib/wchar.h
 lib/libpipeline.pc
 tests/*.log
 tests/*.trs
+tests/*.exe
+tests/testtmp*
 tests/argstr
 tests/basic
 tests/exec
